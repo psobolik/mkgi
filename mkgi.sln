@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mkgi", "mkgi\mkgi.csproj", "{6EB48436-30E9-40CB-83DA-733864D23895}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gitignore-io-library", "gitignore-io-library\gitignore-io-library.csproj", "{4665E143-B8B9-4B92-9264-3D4B7FA28975}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fun", "fun\fun.csproj", "{FD9A6564-F919-4E52-8CEA-E0685A97B6EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EB48436-30E9-40CB-83DA-733864D23895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB48436-30E9-40CB-83DA-733864D23895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB48436-30E9-40CB-83DA-733864D23895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB48436-30E9-40CB-83DA-733864D23895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4665E143-B8B9-4B92-9264-3D4B7FA28975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4665E143-B8B9-4B92-9264-3D4B7FA28975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4665E143-B8B9-4B92-9264-3D4B7FA28975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4665E143-B8B9-4B92-9264-3D4B7FA28975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD9A6564-F919-4E52-8CEA-E0685A97B6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9A6564-F919-4E52-8CEA-E0685A97B6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD9A6564-F919-4E52-8CEA-E0685A97B6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD9A6564-F919-4E52-8CEA-E0685A97B6EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66E72F71-6141-4E0E-8AA9-BB1F8F30E3B7}
+	EndGlobalSection
+EndGlobal
