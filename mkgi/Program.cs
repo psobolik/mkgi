@@ -94,7 +94,7 @@ namespace mkgi
                 window.KeyPress += (e) =>
                 {
                     var keyValue = (char)e.KeyEvent.KeyValue;
-                    if (keyValue >= 32 && keyValue <= 127)
+                    if (keyValue > 32 && keyValue <= 127)
                     {
                         e.Handled = true;
                         var skip = keyValue == _templates[_listView.SelectedItem].First() ? _listView.SelectedItem + 1 : 0;
