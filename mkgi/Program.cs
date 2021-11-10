@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Terminal.Gui;
 
@@ -11,40 +10,38 @@ namespace mkgi
 {
     class Program
     {
-        public static Action _isRunning = MainApp;
+        private static Action _isRunning = MainApp;
 
-        static void Main(string[] args)
+        private static void Main()
         {
             while (_isRunning != null)
                 _isRunning.Invoke();
             Application.Shutdown();
         }
 
-        private static Window _mainWindow;
         private static ListView _listView;
-        private static Label _fileNameLabel;
-        private static StatusBar _statusBar;
-        private static List<string> _templates = new List<string>();
+        private static List<string> _templates;
+        private static string _fileName;
 
-        public static void MainApp()
+        private static void MainApp()
         {
             Application.Init();
+            _fileName = Path.Combine(Directory.GetCurrentDirectory(), ".gitignore");
             var top = Application.Top;
 
-            _mainWindow = CreateWindow();
+            var mainWindow = CreateWindow();
             _listView = CreateListView();
-            _fileNameLabel = CreateLabel();
-            _statusBar = CreateStatusBar();
+            var fileNameLabel = CreateLabel(_fileName);
 
-            _mainWindow.Add(_listView);
-            top.Add(_fileNameLabel);
-            top.Add(_mainWindow);
-            top.Add(_statusBar);
+            mainWindow.Add(_listView);
+            top.Add(fileNameLabel);
+            top.Add(mainWindow);
+            top.Add(CreateStatusBar());
 
             top.LayoutComplete += (e) =>
             {
-                _fileNameLabel.X = Pos.Left(_mainWindow) + 1;
-                _fileNameLabel.Y = Pos.Bottom(_mainWindow);
+                fileNameLabel.X = Pos.Left(mainWindow) + 1;
+                fileNameLabel.Y = Pos.Bottom(mainWindow);
             };
             
             Application.Run();
@@ -60,16 +57,18 @@ namespace mkgi
                     AllowsMarking = true,
                     AllowsMultipleSelection = true,
                 };
-                var task = GitignoreIoRepository.GetTemplateNames();
-                if (task.Wait(5000))
+
+                async void OnListViewOnInitialized(object sender, EventArgs args)
                 {
-                    _templates = task.Result.ToList();
-                    listView.SetSource(_templates);
+                    _templates = (await GitignoreIoRepository.GetTemplateNames()).ToList();
+                    await _listView.SetSourceAsync(_templates);
                 }
+
+                listView.Initialized += OnListViewOnInitialized;
                 return listView;
             }
 
-            static Label CreateLabel()
+            static Label CreateLabel(string text)
             {
                 return new Label
                 {
@@ -78,7 +77,7 @@ namespace mkgi
                     Width = Dim.Fill(),
                     Height = 1,
                     ColorScheme = Colors.TopLevel,
-                    Text = Path.Combine(Directory.GetCurrentDirectory(), ".gitignore"),
+                    Text = text,
                 };
             }
 
@@ -111,42 +110,39 @@ namespace mkgi
 
             static StatusBar CreateStatusBar()
             {
-                return new StatusBar(new StatusItem[] {
+                return new StatusBar(new[] {
                     new StatusItem(Key.ControlS, "~^S~ Save", Save),
                     new StatusItem(Key.ControlQ, "~^Q~ Quit", Quit),
                 });
             }
         }
 
-        static async void Save()
+        private static async void Save()
         {
             var selectedTemplates = GetSelectedTemplates();
-            if (selectedTemplates.Count() == 0)
+            if (!selectedTemplates.Any())
             {
                 MessageBox.ErrorQuery(50, 7, "Nothing Selected", "\nSelect one or more templates and try again.", "OK");
             }
             else
             {
-                var file = _fileNameLabel.Text.ToString();
-                if (File.Exists(file))
+                if (File.Exists(_fileName))
                 {
-                    switch (MessageBox.ErrorQuery(50, 9, "Overwrite", $"\n{file} exists.\n\nDo you want to overwrite it or append to it?", "Overwrite", "Append", "Cancel"))
+                    switch (MessageBox.ErrorQuery(50, 9, "Overwrite", $"\n{_fileName} exists.\n\nDo you want to overwrite it or append to it?", "Overwrite", "Append", "Cancel"))
                     {
                         case 0:
-                            await SaveGitignore(file, selectedTemplates);
+                            await SaveGitignore(_fileName, selectedTemplates);
                             Quit();
                             break;
                         case 1:
-                            await AppendGitignore(file, selectedTemplates);
+                            await AppendGitignore(_fileName, selectedTemplates);
                             Quit();
-                            break;
-                        default:
                             break;
                     }
                 }
                 else
                 {
-                    await SaveGitignore(file, selectedTemplates);
+                    await SaveGitignore(_fileName, selectedTemplates);
                     Quit();
                 }
             }
@@ -155,7 +151,7 @@ namespace mkgi
             {
                 try
                 {
-                    using var writer = new StreamWriter(filePath, true);
+                    await using var writer = new StreamWriter(filePath, true);
                     var contents = await GitignoreIoRepository.GetTemplate(selectedTemplates.ToArray());
                     await writer.WriteAsync(contents);
                 }
@@ -178,7 +174,7 @@ namespace mkgi
                 }
             }
 
-            static IEnumerable<string> GetSelectedTemplates()
+            static List<string> GetSelectedTemplates()
             {
                 var selectedItems = new List<string>();
                 for (int i = 0, l = _listView.Source.Count; i < l; ++i)
@@ -190,15 +186,10 @@ namespace mkgi
             }
         }
 
-        static void Quit()
+        private static void Quit()
         {
             _isRunning = null; 
             Application.Top.Running = false;
-        }
-
-        static void NotImplemented(string what)
-        {
-            MessageBox.Query(50, 7, "Not implemented", $"\n{what} is not implemented.", "OK");
         }
     }
 }

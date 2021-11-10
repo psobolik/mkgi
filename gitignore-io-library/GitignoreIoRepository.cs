@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GitignoreIoLibrary
 {
-    public class GitignoreIoRepository
+    public static class GitignoreIoRepository
     {
         private static readonly string _apiUrl = "https://www.toptal.com/developers/gitignore/api/";
 
         public static async Task<IEnumerable<string>> GetTemplateNames()
         {
-            var result = new List<string>();
             var templateNames = await InvokeApi("list").ConfigureAwait(false);
-            foreach (var line in templateNames.Split('\n'))
-            {
-                foreach (var name in line.Split(','))
-                    result.Add(name);
-            }
-            return result;
+            return templateNames.Split('\n').SelectMany(line => line.Split(',')).ToList();
         }
 
         public static async Task<string> GetTemplate(string[] names)
