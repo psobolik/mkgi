@@ -38,7 +38,7 @@ namespace mkgi
             top.Add(mainWindow);
             top.Add(CreateStatusBar());
 
-            top.LayoutComplete += (e) =>
+            top.LayoutComplete += (_) =>
             {
                 fileNameLabel.X = Pos.Left(mainWindow) + 1;
                 fileNameLabel.Y = Pos.Bottom(mainWindow);
@@ -111,8 +111,8 @@ namespace mkgi
             static StatusBar CreateStatusBar()
             {
                 return new StatusBar(new[] {
-                    new StatusItem(Key.ControlS, "~^S~ Save", Save),
-                    new StatusItem(Key.ControlQ, "~^Q~ Quit", Quit),
+                    new StatusItem(Key.CtrlMask | Key.S, "~^S~ Save", Save),
+                    new StatusItem(Key.CtrlMask | Key.Q, "~^Q~ Quit", Quit),
                 });
             }
         }

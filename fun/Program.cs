@@ -8,7 +8,7 @@ namespace fun
         static void Main(string[] args)
         {
             // DumpTemplateNames();
-            DumpTemplate(new string[] { "vscode", "jetbrains" });
+            DumpTemplate(new string[] { "visualstudiocode", "jetbrains" });
         }
 
         static void DumpTemplateNames()
